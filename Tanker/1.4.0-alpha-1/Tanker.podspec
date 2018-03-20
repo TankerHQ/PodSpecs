@@ -18,11 +18,8 @@ It's available for browsers, desktop, iOS and Android.
 
   s.dependency 'PromiseKit/Promise', '~> 1.7'
   s.dependency 'PromiseKit/When', '~> 1.7'
-  # FIXME remove this ASAP
-  s.dependency 'PromiseKit/Hang', '~> 1.7'
   s.source_files = 'Tanker/Classes/**/*'
-
-  s.swift_version = '4.0.3'
+  s.xcconfig = { 'HEADER_SEARCH_PATHS' => "${PODS_ROOT}/Tanker/vendor/include/**" }
 
   s.subspec 'libtanker' do |libtanker|
 
@@ -85,13 +82,18 @@ It's available for browsers, desktop, iOS and Android.
       res[3..-1]
     end
 
+    libtanker.preserve_paths = 'vendor/lib/*.a', 'vendor/include/**/*.h', 'LICENSE'
     libtanker.vendored_libraries = all_libs
     libnames = all_libs.map { |lib| extract_lib_name.call(lib) }
 
-    libtanker.preserve_paths = 'vendor/lib/*.a', 'vendor/include/**/*.h', 'LICENSE'
     libtanker.libraries = libnames + ['c++', 'c++abi']
-    libtanker.xcconfig = { 'HEADER_SEARCH_PATHS' => "${PODS_ROOT}/Tanker/vendor/include" }
   end
 
+  s.test_spec 'Tests' do |test_spec|
+    test_spec.source_files = 'Tanker/Tests/*.{h,m}'
+    test_spec.dependency 'Specta'
+    test_spec.dependency 'Expecta'
+    test_spec.dependency 'PromiseKit/Hang', '~> 1.7'
+  end
 
 end
